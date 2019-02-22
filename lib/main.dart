@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:share/share.dart';
 
 void main() => runApp(new MyApp());
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Startup Name Generator',
       home: new RandomWords(),
       theme: ThemeData(
-        primaryColor: Colors.white,
+        primaryColor: Colors.blue[700],
       ),
     );
   }
@@ -99,19 +100,75 @@ class RandomWordsState extends State<RandomWords> {
         pair.asPascalCase,
         style: _biggerFont,
       ),
-      trailing: new Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
+      trailing: GestureDetector(
+        child: new Icon(
+          alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.red : null,
+        ),
+        onTap: () {
+          setState(() {
+            if (alreadySaved) {
+              _saved.remove(pair);
+            } else {
+              _saved.add(pair);
+            }
+          });
+        },
       ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      },
+      onTap: () => _pushDetails(pair),
+    );
+  }
+
+  void _pushDetails(WordPair pair) {
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          final bool alreadySaved = _saved.contains(pair);
+
+          return new Scaffold(
+            appBar: new AppBar(
+              title: Text(pair.asPascalCase),
+              actions: <Widget>[
+                IconButton(
+                  icon: new Icon(
+                    alreadySaved ? Icons.favorite : Icons.favorite_border,
+                    color: alreadySaved ? Colors.red : null,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (alreadySaved) {
+                        _saved.remove(pair);
+                      } else {
+                        _saved.add(pair);
+                      }
+                    });
+                  },
+                ),
+                IconButton(
+                    icon: new Icon(
+                      Icons.share,
+                    ),
+                    onPressed: () => Share.share(
+                        'I\'ve found a name for my startup, ${pair.asPascalCase}!'))
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  new Text(
+                    "Why this is a great name\n",
+                    style: TextStyle(fontSize: 18.0),
+                    textAlign: TextAlign.end,
+                  ),
+                  new Text(
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus porta pretium turpis, vel ultricies nunc placerat ut. Nullam vel nibh ac massa faucibus consequat. Pellentesque sit amet diam rutrum, aliquam orci vitae, laoreet turpis. Vestibulum et laoreet ligula, eu convallis dolor. Aenean ornare, ex nec fermentum interdum, lectus ex dictum sem, in facilisis ex lectus et orci. Nullam a sollicitudin risus, ut eleifend nibh. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sed scelerisque nunc, ac facilisis magna. Sed laoreet justo tellus, sit amet tempus velit condimentum ut. Aliquam ac placerat ex. Maecenas rutrum eleifend ipsum, nec faucibus dolor blandit id. Aliquam erat volutpat. Ut scelerisque id nisi eu pretium."),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
