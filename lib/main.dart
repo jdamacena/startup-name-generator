@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
 void main() => runApp(new MyApp());
@@ -34,7 +34,7 @@ class RandomWordsState extends State<RandomWords> {
         title: new Text('Startup Name Generator'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.list),
+            icon: Icon(Icons.folder_special),
             tooltip: 'Open list of saved names',
             onPressed: _pushSaved,
           ),
@@ -68,7 +68,11 @@ class RandomWordsState extends State<RandomWords> {
             appBar: new AppBar(
               title: const Text('Saved Suggestions'),
             ),
-            body: new ListView(children: divided),
+            body: divided.isNotEmpty
+                ? new ListView(children: divided)
+                : new Center(
+                    child: new Text("The awesome names you choose will be shown here"),
+                  ),
           );
         },
       ),
@@ -102,8 +106,8 @@ class RandomWordsState extends State<RandomWords> {
       ),
       trailing: GestureDetector(
         child: new Icon(
-          alreadySaved ? Icons.favorite : Icons.favorite_border,
-          color: alreadySaved ? Colors.red : null,
+          alreadySaved ? Icons.star : Icons.star_border,
+          color: alreadySaved ? Colors.yellow[900] : null,
         ),
         onTap: () {
           setState(() {
@@ -131,8 +135,8 @@ class RandomWordsState extends State<RandomWords> {
               actions: <Widget>[
                 IconButton(
                   icon: new Icon(
-                    alreadySaved ? Icons.favorite : Icons.favorite_border,
-                    color: alreadySaved ? Colors.red : null,
+                    alreadySaved ? Icons.star : Icons.star_border,
+                    color: alreadySaved ? Colors.yellow[900] : null,
                   ),
                   onPressed: () {
                     setState(() {
@@ -153,7 +157,7 @@ class RandomWordsState extends State<RandomWords> {
               ],
             ),
             body: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
                   new Text(
